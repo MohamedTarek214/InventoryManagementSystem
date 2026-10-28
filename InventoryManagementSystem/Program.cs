@@ -16,6 +16,7 @@ namespace InventoryManagementSystem
 
             var app = builder.Build();
 
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -30,6 +31,29 @@ namespace InventoryManagementSystem
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var dbContext = scope.ServiceProvider
+            //        .GetRequiredService<ApplicationDbContext>();
+
+            //    try
+            //    {
+            //        var canConnect = dbContext.Database.CanConnect();
+
+            //        Console.WriteLine(
+            //            canConnect
+            //                ? "Database connection successful!"
+            //                : "Database connection failed!");
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine($"Database error: {ex.Message}");
+            //    }
+            //}
+
+
 
             app.Run();
         }
