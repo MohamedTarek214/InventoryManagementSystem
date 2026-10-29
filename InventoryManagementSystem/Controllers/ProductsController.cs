@@ -59,6 +59,19 @@ namespace InventoryManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                var categoryExists = await _context.Categories
+                    .AnyAsync(c => c.Id == product.CategoryId);
+
+                if (!categoryExists)
+                {
+                    ModelState.AddModelError(
+                        nameof(product.CategoryId),
+                        "The selected category does not exist.");
+
+                    await LoadCategories(product.CategoryId);
+                    return View(product);
+                }
+
                 product.CreatedAt = DateTime.UtcNow;
 
                 _context.Products.Add(product);
@@ -87,6 +100,8 @@ namespace InventoryManagementSystem.Controllers
         }
 
         // POST: Products/Edit/5
+        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Product product)
@@ -94,30 +109,44 @@ namespace InventoryManagementSystem.Controllers
             if (id != product.Id)
                 return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var existingProduct = await _context.Products
-                    .FirstOrDefaultAsync(p => p.Id == id);
-
-                if (existingProduct == null)
-                    return NotFound();
-
-                existingProduct.Name = product.Name;
-                existingProduct.Description = product.Description;
-                existingProduct.Price = product.Price;
-                existingProduct.QuantityInStock = product.QuantityInStock;
-                existingProduct.Supplier = product.Supplier;
-                existingProduct.CategoryId = product.CategoryId;
-                existingProduct.UpdatedAt = DateTime.UtcNow;
-
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                await LoadCategories(product.CategoryId);
+                return View(product);
             }
 
-            await LoadCategories(product.CategoryId);
-            return View(product);
+            var existingProduct = await _context.Products
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (existingProduct == null)
+                return NotFound();
+
+            var categoryExists = await _context.Categories
+                .AnyAsync(c => c.Id == product.CategoryId);
+
+            if (!categoryExists)
+            {
+                ModelState.AddModelError(
+                    nameof(product.CategoryId),
+                    "The selected category does not exist.");
+
+                await LoadCategories(product.CategoryId);
+                return View(product);
+            }
+
+            existingProduct.Name = product.Name;
+            existingProduct.Description = product.Description;
+            existingProduct.Price = product.Price;
+            existingProduct.QuantityInStock = product.QuantityInStock;
+            existingProduct.Supplier = product.Supplier;
+            existingProduct.CategoryId = product.CategoryId;
+            existingProduct.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)

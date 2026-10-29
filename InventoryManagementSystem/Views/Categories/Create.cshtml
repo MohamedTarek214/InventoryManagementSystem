@@ -6,6 +6,12 @@
 
 <div class="container mt-4">
     <h2>Create Category</h2>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <hr />
 
     <div class="row">

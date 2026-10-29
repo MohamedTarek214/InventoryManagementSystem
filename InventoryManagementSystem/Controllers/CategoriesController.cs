@@ -30,6 +30,8 @@ namespace InventoryManagementSystem.Controllers
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Category created successfully.";
+
             return RedirectToAction(nameof(Create));
         }
     }

@@ -26,6 +26,7 @@ namespace InventoryManagementSystem.Models
         [StringLength(100)]
         public string Supplier { get; set; } = string.Empty;
 
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a category.")]
         public int CategoryId { get; set; }
 
         public Category? Category { get; set; }
