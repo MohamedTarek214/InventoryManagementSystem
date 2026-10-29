@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using InventoryManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementSystem.Data
 {
@@ -9,5 +10,8 @@ namespace InventoryManagementSystem.Data
             : base(options)
         {
         }
+
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }
